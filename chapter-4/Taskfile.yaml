@@ -1,0 +1,104 @@
+version: "3"
+
+dotenv: [".env"]
+
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+vars:
+  APP_NAME: todoapp
+  APP_VERSION: 0.0.1-SNAPSHOT
+  MAIN_CLASS: tools/muthuishere/todo/TodoApplication.java
+
+tasks:
+  # Default task
+  default:
+    desc: "Show available tasks"
+    cmds:
+      - task --list
+
+  dev:
+    desc: "Run application in development mode with Streamable profile"
+    dotenv: [".env"]
+    cmds:
+      - ./gradlew bootRun --args='--spring.profiles.active=stateless'
+    interactive: true
+  dev-local:
+    desc: "Run application in local auth server mode with Streamable profile"
+    dotenv: [".env.local"]
+    cmds:
+      - ./gradlew bootRun --args='--spring.profiles.active=stateless'
+    interactive: true
+
+  # GCP Cloud Run tasks using spinx
+  gcp-setup:
+    desc: "Setup GCP Cloud Run resources and IAM"
+    cmds:
+      - spinx gcp-cloudrun setup ./config/cloudrunconfig.yaml
+
+  gcp-deploy:
+    desc: "Deploy to Google Cloud Run using spinx"
+    cmds:
+      - spinx gcp-cloudrun deploy  ./config/cloudrunconfig.yaml
+
+  gcp-destroy:
+    desc: "Tear down GCP Cloud Run resources"
+    cmds:
+      - spinx gcp-cloudrun destroy ./config/cloudrunconfig.yaml
+
+  gcp-logs:
+    desc: "Stream logs from GCP Cloud Run service"
+    cmds:
+      - spinx gcp-cloudrun logs ./config/cloudrunconfig.yaml
+
+  # AWS Fargate tasks using spinx
+  aws-setup:
+    desc: "Setup AWS Fargate resources and IAM"
+    cmds:
+      - spinx aws-fargate setup ./config/fargateconfig.yaml
+
+  aws-deploy:
+    desc: "Deploy to AWS Fargate using spinx"
+    cmds:
+      - spinx aws-fargate deploy ./config/fargateconfig.yaml
+
+  aws-destroy:
+    desc: "Tear down AWS Fargate resources"
+    cmds:
+      - spinx aws-fargate destroy ./config/fargateconfig.yaml
+
+  aws-logs:
+    desc: "Stream logs from AWS Fargate service"
+    cmds:
+      - spinx aws-fargate logs ./config/fargateconfig.yaml
+
+  # Azure Container Apps tasks using spinx
+  azure-setup:
+    desc: "Setup Azure Container Apps resources and IAM"
+    cmds:
+      - spinx azure-container-apps setup ./config/azurecontainerappsconfig.yaml
+
+  azure-deploy:
+    desc: "Deploy to Azure Container Apps using spinx"
+    cmds:
+      - spinx azure-container-apps deploy ./config/azurecontainerappsconfig.yaml
+
+  azure-destroy:
+    desc: "Tear down Azure Container Apps resources"
+    cmds:
+      - spinx azure-container-apps destroy ./config/azurecontainerappsconfig.yaml
+
+  azure-logs:
+    desc: "Stream logs from Azure Container Apps service"
+    cmds:
+      - spinx azure-container-apps logs ./config/azurecontainerappsconfig.yaml
+
+  # Docker Compose tasks for local development
+  docker-up:
+    desc: "Build and start services with docker-compose using BuildKit"
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+    cmds:
+      - docker compose up --build

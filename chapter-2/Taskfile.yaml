@@ -1,0 +1,24 @@
+version: '3'
+
+dotenv: [".env"]
+
+vars:
+  APP_NAME: todoapp
+  APP_VERSION: 0.0.1-SNAPSHOT
+  MAIN_CLASS: tools/muthuishere/todo/TodoApplication.java
+
+
+tasks:
+  # Default task
+  default:
+    desc: "Show available tasks"
+    cmds:
+      - task --list
+
+
+
+  dev:
+    desc: "Run application in development mode with Streamable profile"
+    cmds:
+      - ./gradlew bootRun --args='--spring.profiles.active=stateless'
+    interactive: true

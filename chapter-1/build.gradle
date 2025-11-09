@@ -1,0 +1,78 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.7'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'tools.muthuishere'
+version = '0.0.1-SNAPSHOT'
+description = 'mcp todo spring boot'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+	maven {
+		name = 'Central Portal Snapshots'
+		url = 'https://central.sonatype.com/repository/maven-snapshots/'
+	}
+}
+
+
+dependencies {
+	implementation platform("org.springframework.ai:spring-ai-bom:1.1.0-M4")
+
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'com.h2database:h2'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+implementation 'org.springframework.ai:spring-ai-starter-mcp-server-webmvc'
+	
+		implementation 'org.springframework.ai:spring-ai-starter-mcp-server'
+
+	implementation 'org.springframework.ai:spring-ai-mcp-annotations'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// Development tasks with different profiles
+task devSse(type: org.springframework.boot.gradle.tasks.run.BootRun) {
+	description = 'Run application in development mode with SSE profile'
+	group = 'development'
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass = 'tools.muthuishere.todo.TodoApplication'
+	args = ['--spring.profiles.active=sse']
+}
+
+task devStreamable(type: org.springframework.boot.gradle.tasks.run.BootRun) {
+	description = 'Run application in development mode with Streamable profile'
+	group = 'development'
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass = 'tools.muthuishere.todo.TodoApplication'
+	args = ['--spring.profiles.active=streamable']
+}
+
+task devStateless(type: org.springframework.boot.gradle.tasks.run.BootRun) {
+	description = 'Run application in development mode with Stateless profile'
+	group = 'development'
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass = 'tools.muthuishere.todo.TodoApplication'
+	args = ['--spring.profiles.active=stateless']
+}

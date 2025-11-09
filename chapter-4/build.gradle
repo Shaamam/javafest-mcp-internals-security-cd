@@ -1,0 +1,85 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.7'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'tools.muthuishere'
+version = '0.0.1-SNAPSHOT'
+description = 'mcp todo spring boot'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+	maven {
+		name = 'Central Portal Snapshots'
+		url = 'https://central.sonatype.com/repository/maven-snapshots/'
+	}
+}
+
+
+dependencies {
+	implementation platform("org.springframework.ai:spring-ai-bom:1.1.0-M4")
+
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'com.h2database:h2'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'com.nimbusds:nimbus-jose-jwt:9.39.1'
+	implementation 'com.google.firebase:firebase-admin:9.4.1'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+implementation 'org.springframework.ai:spring-ai-starter-mcp-server-webmvc'
+	
+		implementation 'org.springframework.ai:spring-ai-starter-mcp-server'
+
+	implementation 'org.springframework.ai:spring-ai-mcp-annotations'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springframework.ai:spring-ai-mcp-annotations'
+	implementation 'org.springaicommunity:mcp-server-security:0.0.3'
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// Development tasks with different profiles
+tasks.register('devSse', org.springframework.boot.gradle.tasks.run.BootRun) {
+	description = 'Run application in development mode with SSE profile'
+	group = 'development'
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass = 'tools.muthuishere.todo.TodoApplication'
+	args = ['--spring.profiles.active=sse']
+}
+
+tasks.register('devStreamable', org.springframework.boot.gradle.tasks.run.BootRun) {
+	description = 'Run application in development mode with Streamable profile'
+	group = 'development'
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass = 'tools.muthuishere.todo.TodoApplication'
+	args = ['--spring.profiles.active=streamable']
+}
+
+tasks.register('devStateless', org.springframework.boot.gradle.tasks.run.BootRun) {
+	description = 'Run application in development mode with Stateless profile'
+	group = 'development'
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass = 'tools.muthuishere.todo.TodoApplication'
+	args = ['--spring.profiles.active=stateless']
+}
